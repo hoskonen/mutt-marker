@@ -18,9 +18,10 @@ MuttMarker.Config               = {
     },
     dogCompassId     = "PLAYER_DOG",
     dogHudIconId     = "dogcompanion",
-    dogIconId        = "dog",
-    mapNameKey       = "char_667_uiName",
+    dogMapIconId     = "dogcompanion",
+    showDogOnMap     = true,
     showDogOnCompass = true,
+    mapNameKey       = "char_667_uiName",
 }
 
 -- ===== State =====
@@ -207,15 +208,17 @@ end
 
 -- Map POI when map opens
 function MuttMarker:AddDogMapMarker(elementName, instanceId)
+    if not MuttMarker.Config.showDogOnMap then return end
     local e = MuttMarker.ResolveDog(); if not (e and e.GetPos) then return end
     local p = e:GetPos()
     local values = { 1, MuttMarker.Config.dogCompassId, MuttMarker.Config.mapNameKey,
-        MuttMarker.Config.dogIconId, 2, false, 0, p.x, p.y }
+        MuttMarker.Config.dogMapIconId, 2, false, 0, p.x, p.y }
     UIAction.SetArray(elementName, instanceId, "PoiMarkers", values)
     UIAction.CallFunction(elementName, instanceId, "AddPoiMarkers")
 end
 
 function MuttMarker:AddDogMapMarkerWithDelay(elementName, instanceId, eventName, argTable)
+    if not MuttMarker.Config.showDogOnMap then return end
     Script.SetTimer(50, function() MuttMarker:AddDogMapMarker(elementName, instanceId) end)
 end
 
@@ -233,11 +236,8 @@ function MuttMarker.Client:OnInit()
         self.bInitialized = 1
     end
     -- Map listener
-    UIAction.RegisterElementListener(MuttMarker, "ApseMap", -1, "OnShow", "AddDogMapMarkerWithDelay")
-
-    -- Optional one-shot icon probe
-    if MuttMarker.Config.iconProbeOnce then
-        Script.SetTimer(500, function() MuttMarker:_debugProbeIconRing() end)
+    if MuttMarker.Config.showDogOnMap then
+        UIAction.RegisterElementListener(MuttMarker, "ApseMap", -1, "OnShow", "AddDogMapMarkerWithDelay")
     end
 
     if not self.bInitialized then
