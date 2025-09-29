@@ -1,0 +1,11 @@
+<kcd_mod>
+  <info>
+    <name>Mutt Marker</name>
+    <description>Stops horse teleporting to you and adds map/compass marker for player horse</description>
+    <modid>muttmarker</modid>
+    <author>hoskope keltaria</author>
+    <version>1.0</version>
+    <created_on>2025-09-30</created_on>
+    <modifies_level>false</modifies_level>
+  </info>
+</kcd_mod>
