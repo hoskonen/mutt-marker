@@ -1,14 +1,15 @@
 -- [Scripts/Entities/VorechsMark.lua]
 -- Barebones entity that ticks every frame and logs at a throttled interval.
 
-VorechsMark        = VorechsMark or {
+VorechsMark                      = VorechsMark or {
     Client     = {},
     Server     = {},
     Properties = { bSaved_by_game = 0, Saved_by_game = 0, bSerialize = 0 },
 }
 
 -- ===== Config (rename these in your script) =====
-VorechsMark.Config = {
+VorechsMark.Config               = {
+    debug           = false,
     -- IDs
     compassMarkerId = "VORECHS_MARK", -- the unique id we add/update/remove on the HUD
 
@@ -31,7 +32,6 @@ VorechsMark.Config = {
     showCompass     = true,
     showMap         = true, -- spoiler-safe default
 }
-
 
 -- ===== State =====
 VorechsMark._dogId               = VorechsMark._dogId or nil
@@ -145,25 +145,6 @@ function VorechsMark.ResolveDog()
 end
 
 -- === Compass & Map ===
-function VorechsMark:_ensureDogCompass()
-    local e = VorechsMark.ResolveDog()
-    if not e then
-        UIAction.CallFunction("hud", -1, "RemoveCompassMarker", VorechsMark.Config.compassMarkerId)
-        self._compassAdded = false -- important: allow re-add later
-        return
-    end
-    if self._compassAdded then return end
-
-    local dist = player and player.GetDistance and player:GetDistance(e.id) or 0
-    UIAction.CallFunction("hud", -1, "AddCompassMarker",
-        VorechsMark.Config.compassMarkerId,
-        VorechsMark.Config.compassIconId,
-        VorechsMark.Config.compassState, -- was 1
-        -1, -1, dist, 0, false, false, 3, 50, 100)
-    self._compassAdded = true
-    UIAction.CallFunction("hud", -1, "UpdateCompass", 0) -- force initial draw
-end
-
 function VorechsMark:AddDogCompassMarker()
     if not VorechsMark.Config.showCompass then
         UIAction.CallFunction("hud", -1, "RemoveCompassMarker", VorechsMark.Config.compassMarkerId)
